@@ -1,0 +1,912 @@
+
+<style>
+@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display&family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600&display=swap');
+
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg: var(--color-background-primary);
+  --bg2: var(--color-background-secondary);
+  --bg3: var(--color-background-tertiary);
+  --txt: var(--color-text-primary);
+  --txt2: var(--color-text-secondary);
+  --txt3: var(--color-text-tertiary);
+  --bdr: var(--color-border-tertiary);
+  --bdr2: var(--color-border-secondary);
+  --radius: var(--border-radius-md);
+  --radius-lg: var(--border-radius-lg);
+}
+
+body{font-family:'DM Sans',sans-serif;color:var(--txt);background:transparent;line-height:1.6;font-size:14px}
+
+/* ── HEADER ── */
+.hero{padding:2.5rem 1.5rem 2rem;border-bottom:0.5px solid var(--bdr)}
+.hero-eyebrow{font-family:'DM Mono',monospace;font-size:11px;letter-spacing:.12em;color:var(--txt3);text-transform:uppercase;margin-bottom:.6rem}
+.hero-title{font-family:'DM Serif Display',serif;font-size:clamp(26px,4vw,38px);font-weight:400;line-height:1.15;color:var(--txt);margin-bottom:.75rem}
+.hero-title em{font-style:italic;color:#534AB7}
+.hero-sub{font-size:13px;color:var(--txt2);max-width:560px;line-height:1.7}
+.hero-stats{display:flex;gap:1.5rem;margin-top:1.5rem;flex-wrap:wrap}
+.stat{background:var(--bg2);border:0.5px solid var(--bdr);border-radius:var(--radius);padding:.6rem 1rem;display:flex;flex-direction:column;gap:2px}
+.stat-val{font-size:18px;font-weight:500;color:var(--txt)}
+.stat-lbl{font-size:11px;color:var(--txt3);letter-spacing:.06em;text-transform:uppercase}
+
+/* ── NAV ── */
+.nav{position:sticky;top:0;z-index:100;background:var(--bg);border-bottom:0.5px solid var(--bdr);padding:.5rem 1.5rem;display:flex;gap:.3rem;flex-wrap:wrap;backdrop-filter:blur(8px)}
+.nav-btn{font-size:11px;font-family:'DM Mono',monospace;padding:.3rem .6rem;border-radius:var(--radius);border:0.5px solid transparent;cursor:pointer;background:transparent;color:var(--txt2);transition:all .15s;white-space:nowrap}
+.nav-btn:hover{background:var(--bg2);color:var(--txt)}
+.nav-btn.active{background:var(--bg2);border-color:var(--bdr2);color:var(--txt)}
+
+/* ── LAYOUT ── */
+.container{padding:1.5rem}
+.section{display:none}
+.section.active{display:block}
+
+/* ── PHASE BADGE ── */
+.phase-header{display:flex;align-items:flex-start;gap:1rem;margin-bottom:1.5rem}
+.phase-num{font-family:'DM Serif Display',serif;font-size:60px;line-height:1;color:var(--bdr2);flex-shrink:0;margin-top:-.2rem}
+.phase-meta{}
+.phase-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--txt3);margin-bottom:.25rem}
+.phase-title{font-size:20px;font-weight:500;color:var(--txt);line-height:1.2}
+.phase-subtitle{font-size:13px;color:var(--txt2);margin-top:.25rem}
+
+/* ── WEEK CARD ── */
+.week-card{background:var(--bg);border:0.5px solid var(--bdr);border-radius:var(--radius-lg);margin-bottom:1.25rem;overflow:hidden}
+.week-header{padding:1rem 1.25rem;display:flex;align-items:center;gap:.75rem;cursor:pointer;user-select:none;border-bottom:0.5px solid transparent;transition:border-color .15s}
+.week-header:hover{background:var(--bg2)}
+.week-header.open{border-bottom-color:var(--bdr)}
+.week-badge{font-family:'DM Mono',monospace;font-size:10px;background:var(--bg2);border:0.5px solid var(--bdr);padding:.25rem .55rem;border-radius:var(--radius);color:var(--txt2);white-space:nowrap}
+.week-title{font-size:14px;font-weight:500;flex:1}
+.week-accent{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.chevron{font-size:10px;color:var(--txt3);transition:transform .2s;flex-shrink:0}
+.week-header.open .chevron{transform:rotate(180deg)}
+.week-body{display:none;padding:1.25rem}
+.week-body.open{display:block}
+
+/* ── GRID INSIDE WEEK ── */
+.week-grid{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
+@media(max-width:600px){.week-grid{grid-template-columns:1fr}}
+
+/* ── BLOCK ── */
+.block{background:var(--bg2);border-radius:var(--radius);padding:.9rem 1rem;display:flex;flex-direction:column;gap:.5rem}
+.block.full{grid-column:1/-1}
+.block-label{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--txt3)}
+.block-content{font-size:13px;color:var(--txt2);line-height:1.7}
+.block-content strong{color:var(--txt);font-weight:500}
+
+/* ── PILLS ── */
+.pills{display:flex;flex-wrap:wrap;gap:.35rem;margin-top:.1rem}
+.pill{font-size:11px;padding:.2rem .55rem;border-radius:var(--radius);border:0.5px solid var(--bdr2);color:var(--txt2);font-family:'DM Mono',monospace}
+.pill.purple{background:#EEEDFE;border-color:#AFA9EC;color:#3C3489}
+.pill.teal{background:#E1F5EE;border-color:#5DCAA5;color:#085041}
+.pill.amber{background:#FAEEDA;border-color:#EF9F27;color:#633806}
+.pill.coral{background:#FAECE7;border-color:#F0997B;color:#4A1B0C}
+.pill.blue{background:#E6F1FB;border-color:#85B7EB;color:#042C53}
+.pill.gray{background:var(--bg2);border-color:var(--bdr2);color:var(--txt2)}
+@media(prefers-color-scheme:dark){
+  .pill.purple{background:#26215C;border-color:#534AB7;color:#CECBF6}
+  .pill.teal{background:#04342C;border-color:#1D9E75;color:#9FE1CB}
+  .pill.amber{background:#412402;border-color:#BA7517;color:#FAC775}
+  .pill.coral{background:#4A1B0C;border-color:#D85A30;color:#F5C4B3}
+  .pill.blue{background:#042C53;border-color:#378ADD;color:#B5D4F4}
+}
+
+/* ── ALERT / WHY BOX ── */
+.why-box{background:var(--bg2);border-left:2.5px solid #534AB7;border-radius:0 var(--radius) var(--radius) 0;padding:.75rem 1rem;margin:.75rem 0;font-size:13px;color:var(--txt2);line-height:1.7}
+.why-box strong{color:var(--txt);font-weight:500}
+
+/* ── EXERCISE BOX ── */
+.exercise{background:var(--bg2);border-left:2.5px solid #1D9E75;border-radius:0 var(--radius) var(--radius) 0;padding:.75rem 1rem;margin-bottom:.6rem;font-size:13px;line-height:1.7;color:var(--txt2)}
+.exercise-title{font-weight:500;color:var(--txt);font-size:13px;margin-bottom:.25rem}
+
+/* ── RESOURCE ── */
+.resource{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem 0;border-bottom:0.5px solid var(--bdr)}
+.resource:last-child{border-bottom:none}
+.res-icon{font-size:14px;margin-top:1px;flex-shrink:0}
+.res-content{flex:1}
+.res-title{font-size:13px;font-weight:500;color:var(--txt)}
+.res-meta{font-size:11px;color:var(--txt3);font-family:'DM Mono',monospace}
+
+/* ── PRACTICE PROBLEMS ── */
+.prob-grid{display:grid;grid-template-columns:1fr 1fr;gap:.75rem}
+@media(max-width:600px){.prob-grid{grid-template-columns:1fr}}
+.prob-card{background:var(--bg2);border:0.5px solid var(--bdr);border-radius:var(--radius);padding:.75rem 1rem;cursor:pointer;transition:border-color .15s}
+.prob-card:hover{border-color:var(--bdr2)}
+.prob-title{font-size:13px;font-weight:500;color:var(--txt);margin-bottom:.25rem}
+.prob-tags{display:flex;gap:.3rem;flex-wrap:wrap}
+.prob-diff{font-family:'DM Mono',monospace;font-size:10px;letter-spacing:.06em;text-transform:uppercase}
+.diff-med{color:#BA7517}
+.diff-hard{color:#A32D2D}
+.diff-ext{color:#533AB7}
+
+/* ── PROGRESS BAR ── */
+.progress-wrap{padding:1rem 1.5rem;border-bottom:0.5px solid var(--bdr);display:flex;align-items:center;gap:1rem}
+.progress-label{font-size:12px;color:var(--txt3);font-family:'DM Mono',monospace;white-space:nowrap}
+.progress-bar{flex:1;height:4px;background:var(--bg2);border-radius:2px;position:relative;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#534AB7,#1D9E75);border-radius:2px;transition:width .3s;width:0%}
+.progress-pct{font-size:12px;color:var(--txt2);font-weight:500;white-space:nowrap}
+
+/* ── SECTION DIVIDER ── */
+.sdivider{height:0.5px;background:var(--bdr);margin:1.5rem 0}
+.section-title{font-size:16px;font-weight:500;color:var(--txt);margin-bottom:1rem}
+
+/* ── WEEK COLORS ── */
+.c1{background:#534AB7}.c2{background:#3B8BD4}.c3{background:#1D9E75}.c4{background:#EF9F27}
+.c5{background:#D85A30}.c6{background:#A32D2D}.c7{background:#3C3489}.c8{background:#0F6E56}
+.c9{background:#633806}.c10{background:#71241E}.c11{background:#185FA5}.c12{background:#27500A}
+
+/* ── MINI PROJECT ── */
+.project-card{background:var(--bg);border:0.5px solid var(--bdr);border-radius:var(--radius-lg);padding:1rem 1.25rem;margin-bottom:.75rem}
+.project-title{font-size:14px;font-weight:500;color:var(--txt);margin-bottom:.4rem;display:flex;align-items:center;gap:.5rem}
+.project-badge{font-family:'DM Mono',monospace;font-size:10px;padding:.15rem .45rem;border-radius:var(--radius);background:var(--bg2);color:var(--txt3);border:0.5px solid var(--bdr)}
+.project-desc{font-size:13px;color:var(--txt2);line-height:1.7;margin-bottom:.5rem}
+
+/* ── AI TOOLS SECTION ── */
+.tool-card{background:var(--bg2);border-radius:var(--radius);padding:.75rem 1rem;margin-bottom:.6rem;display:flex;gap:.75rem}
+.tool-icon{font-size:18px;flex-shrink:0;margin-top:1px}
+.tool-name{font-size:13px;font-weight:500;color:var(--txt);margin-bottom:.2rem}
+.tool-desc{font-size:12px;color:var(--txt2);line-height:1.6}
+</style>
+
+<div class="hero">
+  <div class="hero-eyebrow">System Design Mastery · 2026 Edition</div>
+  <div class="hero-title">From Backend Engineer to<br><em>Distributed Systems Thinker</em></div>
+  <div class="hero-sub">A progressive 12-week learning plan built for working engineers. 4–5 hours per week. High-impact topics only. Grounded in how production systems actually behave at scale.</div>
+  <div class="hero-stats">
+    <div class="stat"><span class="stat-val">12</span><span class="stat-lbl">Weeks</span></div>
+    <div class="stat"><span class="stat-val">~50h</span><span class="stat-lbl">Total Investment</span></div>
+    <div class="stat"><span class="stat-val">4 Phases</span><span class="stat-lbl">Progressive Stages</span></div>
+    <div class="stat"><span class="stat-val">40+</span><span class="stat-lbl">Practice Problems</span></div>
+  </div>
+</div>
+
+<div class="progress-wrap" id="progress-wrap">
+  <span class="progress-label">PROGRESS</span>
+  <div class="progress-bar"><div class="progress-fill" id="prog-fill"></div></div>
+  <span class="progress-pct" id="prog-pct">0 / 12 weeks</span>
+</div>
+
+<nav class="nav" id="mainnav">
+  <button class="nav-btn active" data-tab="roadmap">Roadmap</button>
+  <button class="nav-btn" data-tab="problems">Practice Problems</button>
+  <button class="nav-btn" data-tab="projects">Mini Projects</button>
+  <button class="nav-btn" data-tab="tools">AI & Tools</button>
+</nav>
+
+<div class="container">
+
+<!-- ══════════════════════════════════════════════ ROADMAP ══ -->
+<div class="section active" id="tab-roadmap">
+
+<!-- PHASE 1 -->
+<div class="phase-header">
+  <div class="phase-num">1</div>
+  <div class="phase-meta">
+    <div class="phase-label">Weeks 1–3 · Foundation</div>
+    <div class="phase-title">Scaling Fundamentals & Data Architecture</div>
+    <div class="phase-subtitle">Build the mental models that underpin every design decision you'll make.</div>
+  </div>
+</div>
+
+<!-- WEEK 1 -->
+<div class="week-card">
+  <div class="week-header" onclick="toggleWeek(this)">
+    <div class="week-badge">Week 01</div>
+    <div class="week-accent c1"></div>
+    <div class="week-title">Scalability Thinking & System Primitives</div>
+    <div class="chevron">▼</div>
+  </div>
+  <div class="week-body">
+    <div class="why-box"><strong>Why this matters:</strong> Every architectural decision — sharding, caching, queue depth — traces back to understanding where your bottlenecks are. Engineers who skip this end up optimizing the wrong layer.</div>
+    <div class="week-grid">
+      <div class="block">
+        <div class="block-label">Core Concepts</div>
+        <div class="block-content">Horizontal vs vertical scaling · Stateless vs stateful services · The CAP theorem in practice · Latency vs throughput trade-offs · P99/P999 tail latencies · Little's Law (L = λW) · Single points of failure · The fallacies of distributed computing</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Modern Production Reality</div>
+        <div class="block-content">Kubernetes pod autoscaling · AWS Auto Scaling Groups · Spot instance fleet strategies · Multi-region active-active deployments · Chaos engineering principles (Netflix Chaos Monkey model) · SLOs, SLAs, and error budgets</div>
+      </div>
+      <div class="block full">
+        <div class="block-label">Technologies to Explore</div>
+        <div class="pills">
+          <span class="pill purple">Kubernetes HPA/VPA</span>
+          <span class="pill blue">AWS EC2 Auto Scaling</span>
+          <span class="pill teal">Load Balancers (ALB/NLB)</span>
+          <span class="pill amber">Terraform (IaC basics)</span>
+          <span class="pill gray">Prometheus metrics</span>
+          <span class="pill coral">Grafana dashboards</span>
+        </div>
+      </div>
+    </div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Exercises</div>
+    <div class="exercise"><div class="exercise-title">Capacity estimation drill</div>Design for "Twitter at 500M DAU" — estimate QPS, storage (tweets, media), bandwidth. Practice back-of-envelope without a calculator for 30 min. Repeat for Dropbox and WhatsApp.</div>
+    <div class="exercise"><div class="exercise-title">Bottleneck mapping</div>Take a simple web app (user → API → DB) and draw every possible bottleneck. For each, write the first mitigation you'd apply. Discuss with a peer or write it up.</div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Resources</div>
+    <div class="resource"><span class="res-icon">📖</span><div class="res-content"><div class="res-title">Designing Data-Intensive Applications — Kleppmann (Ch. 1–2)</div><div class="res-meta">Book · Essential · Read chapters on reliability, scalability, maintainability</div></div></div>
+    <div class="resource"><span class="res-icon">🎥</span><div class="res-content"><div class="res-title">System Design Interview — Alex Xu (Vol. 1, Ch. 1)</div><div class="res-meta">Book · Back-of-envelope estimation techniques</div></div></div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">Google SRE Book — Chapter on Error Budgets (free online)</div><div class="res-meta">sre.google/sre-book · SLOs, SLAs, error budgets in production</div></div></div>
+  </div>
+</div>
+
+<!-- WEEK 2 -->
+<div class="week-card">
+  <div class="week-header" onclick="toggleWeek(this)">
+    <div class="week-badge">Week 02</div>
+    <div class="week-accent c2"></div>
+    <div class="week-title">Databases: Choosing, Scaling & Designing Schemas</div>
+    <div class="chevron">▼</div>
+  </div>
+  <div class="week-body">
+    <div class="why-box"><strong>Why this matters:</strong> The database is almost always the hardest part of a system to scale and change. Wrong database choice or schema is debt that compounds for years. In 2026, engineers need to fluently navigate SQL, NoSQL, NewSQL, vector, and time-series stores.</div>
+    <div class="week-grid">
+      <div class="block">
+        <div class="block-label">Core Concepts</div>
+        <div class="block-content">ACID vs BASE · Read replicas & replication lag · Sharding strategies (range, hash, directory) · Index design (B-tree, LSM-tree) · Connection pooling · MVCC · Write-ahead log (WAL) · Database partitioning · Denormalization trade-offs · Consistent hashing</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Database Taxonomy</div>
+        <div class="block-content"><strong>Relational:</strong> PostgreSQL, Aurora · <strong>Document:</strong> MongoDB, Firestore · <strong>Wide-column:</strong> Cassandra, DynamoDB · <strong>Key-value:</strong> Redis, DragonflyDB · <strong>Time-series:</strong> InfluxDB, TimescaleDB · <strong>Vector:</strong> Pinecone, pgvector, Weaviate · <strong>Graph:</strong> Neo4j, Amazon Neptune · <strong>NewSQL:</strong> CockroachDB, Spanner</div>
+      </div>
+      <div class="block full">
+        <div class="block-label">Technologies</div>
+        <div class="pills">
+          <span class="pill blue">PostgreSQL + pgvector</span>
+          <span class="pill teal">DynamoDB single-table design</span>
+          <span class="pill amber">Redis Cluster</span>
+          <span class="pill purple">Cassandra ring topology</span>
+          <span class="pill gray">PgBouncer (connection pooling)</span>
+          <span class="pill coral">TimescaleDB</span>
+        </div>
+      </div>
+    </div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Exercises</div>
+    <div class="exercise"><div class="exercise-title">Database selection matrix</div>For each system — Instagram, Uber Surge Pricing, IoT sensor telemetry, a fraud detection model store — pick the right DB and justify it. List trade-offs explicitly.</div>
+    <div class="exercise"><div class="exercise-title">Schema design under constraints</div>Design a schema for a multi-tenant SaaS product where each tenant has its own data isolation requirement but shares infrastructure. Model it in both PostgreSQL (row-level security) and DynamoDB (single-table design).</div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Resources</div>
+    <div class="resource"><span class="res-icon">📖</span><div class="res-content"><div class="res-title">DDIA — Chapters 3, 5, 6 (Storage, Replication, Partitioning)</div><div class="res-meta">Book · Kleppmann · The definitive source on how databases actually work</div></div></div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">The DynamoDB Book — Alex DeBrie</div><div class="res-meta">dynamodbbook.com · Single-table design patterns used at scale</div></div></div>
+    <div class="resource"><span class="res-icon">🎥</span><div class="res-content"><div class="res-title">CMU Database Group — YouTube (Andy Pavlo lectures)</div><div class="res-meta">youtube.com/c/CMUDatabaseGroup · Free university-level DB internals</div></div></div>
+  </div>
+</div>
+
+<!-- WEEK 3 -->
+<div class="week-card">
+  <div class="week-header" onclick="toggleWeek(this)">
+    <div class="week-badge">Week 03</div>
+    <div class="week-accent c3"></div>
+    <div class="week-title">Caching Architecture & CDNs</div>
+    <div class="chevron">▼</div>
+  </div>
+  <div class="week-body">
+    <div class="why-box"><strong>Why this matters:</strong> Caching is where you buy 10× performance for a fraction of the cost. But wrong caching strategies (thundering herd, stale data, cache avalanche) introduce subtle production disasters. This week builds the intuition to cache correctly.</div>
+    <div class="week-grid">
+      <div class="block">
+        <div class="block-label">Core Concepts</div>
+        <div class="block-content">Cache invalidation strategies (TTL, write-through, write-behind, write-around) · Cache-aside (lazy loading) · Read-through · Cache stampede / thundering herd · Hot key problem · Cache warming · Eviction policies (LRU, LFU, ARC) · Multi-level caching (L1/L2/L3 analogy) · Negative caching</div>
+      </div>
+      <div class="block">
+        <div class="block-label">CDN & Edge Computing</div>
+        <div class="block-content">CDN origin shielding · Cache-Control headers · Surrogate keys (Fastly, Varnish) · Edge Side Includes (ESI) · CDN-based compute (Cloudflare Workers, Lambda@Edge) · Stale-while-revalidate · Cache purging strategies · Regional failover via CDN</div>
+      </div>
+      <div class="block full">
+        <div class="block-label">Technologies</div>
+        <div class="pills">
+          <span class="pill amber">Redis / DragonflyDB</span>
+          <span class="pill teal">Memcached</span>
+          <span class="pill blue">Cloudflare CDN + Workers</span>
+          <span class="pill purple">Varnish Cache</span>
+          <span class="pill coral">AWS ElastiCache</span>
+          <span class="pill gray">Fastly Surrogate Keys</span>
+        </div>
+      </div>
+    </div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Exercises</div>
+    <div class="exercise"><div class="exercise-title">Cache hierarchy design</div>Design caching for a product page on an e-commerce site: browser cache → CDN → API gateway cache → service cache → DB. Define TTL, invalidation triggers, and stale data tolerance at each layer.</div>
+    <div class="exercise"><div class="exercise-title">Thundering herd simulation</div>Sketch how a cache stampede happens when a popular Redis key expires during peak traffic. Then design the mitigation: probabilistic expiration + mutex lock + background refresh. Write pseudo-code.</div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Resources</div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">Cloudflare Blog — How their CDN and edge network operates</div><div class="res-meta">blog.cloudflare.com · Real engineering from a hyperscale CDN</div></div></div>
+    <div class="resource"><span class="res-icon">📖</span><div class="res-content"><div class="res-title">Redis Documentation — Data Types & Patterns</div><div class="res-meta">redis.io/docs · Especially sorted sets, pub/sub, streams</div></div></div>
+  </div>
+</div>
+
+<div class="sdivider"></div>
+
+<!-- PHASE 2 -->
+<div class="phase-header">
+  <div class="phase-num">2</div>
+  <div class="phase-meta">
+    <div class="phase-label">Weeks 4–6 · Communication & Reliability</div>
+    <div class="phase-title">Distributed Communication, Async Patterns & Reliability Engineering</div>
+    <div class="phase-subtitle">How services talk to each other at scale — and what happens when they don't.</div>
+  </div>
+</div>
+
+<!-- WEEK 4 -->
+<div class="week-card">
+  <div class="week-header" onclick="toggleWeek(this)">
+    <div class="week-badge">Week 04</div>
+    <div class="week-accent c4"></div>
+    <div class="week-title">API Design, Service Communication & gRPC</div>
+    <div class="chevron">▼</div>
+  </div>
+  <div class="week-body">
+    <div class="why-box"><strong>Why this matters:</strong> Modern systems use a mix of REST, gRPC, GraphQL, and WebSockets. Knowing when to use which — and designing APIs that can evolve without breaking clients — is a critical senior engineer skill in 2026.</div>
+    <div class="week-grid">
+      <div class="block">
+        <div class="block-label">Core Concepts</div>
+        <div class="block-content">REST vs gRPC vs GraphQL vs tRPC · Idempotency & safe methods · API versioning strategies · Pagination patterns (cursor, offset, keyset) · Rate limiting algorithms (token bucket, leaky bucket, sliding window) · API Gateway patterns · Backend for Frontend (BFF) pattern · Contract-first design</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Service Mesh & Internal Comms</div>
+        <div class="block-content">Service mesh (Istio, Linkerd) · mTLS between services · Service discovery (Consul, DNS-based) · Load balancing algorithms (round-robin, least-connections, consistent hashing) · Circuit breaker pattern · Retry strategies with exponential backoff & jitter · Timeout cascades</div>
+      </div>
+      <div class="block full">
+        <div class="block-label">Technologies</div>
+        <div class="pills">
+          <span class="pill purple">gRPC + Protocol Buffers</span>
+          <span class="pill teal">GraphQL (Apollo / Hasura)</span>
+          <span class="pill blue">Kong / AWS API Gateway</span>
+          <span class="pill amber">Istio / Linkerd</span>
+          <span class="pill coral">OpenAPI / Swagger</span>
+          <span class="pill gray">Envoy Proxy</span>
+        </div>
+      </div>
+    </div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Exercises</div>
+    <div class="exercise"><div class="exercise-title">Design a public API for a payment service</div>Define REST endpoints with idempotency keys, versioning strategy, rate limits per tier, and error codes. Write an OpenAPI spec for the charge and refund flows.</div>
+    <div class="exercise"><div class="exercise-title">Rate limiter implementation</div>Implement a sliding window rate limiter in Redis using a sorted set. Handle distributed rate limiting across multiple API server instances.</div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Resources</div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">Stripe Engineering Blog — API design & idempotency</div><div class="res-meta">stripe.com/blog · Real-world API design decisions from a payments giant</div></div></div>
+    <div class="resource"><span class="res-icon">📖</span><div class="res-content"><div class="res-title">gRPC documentation + Protocol Buffers Guide</div><div class="res-meta">grpc.io · Understand the wire protocol, streaming, deadlines</div></div></div>
+  </div>
+</div>
+
+<!-- WEEK 5 -->
+<div class="week-card">
+  <div class="week-header" onclick="toggleWeek(this)">
+    <div class="week-badge">Week 05</div>
+    <div class="week-accent c5"></div>
+    <div class="week-title">Async Systems: Message Queues, Event Streaming & CQRS</div>
+    <div class="chevron">▼</div>
+  </div>
+  <div class="week-body">
+    <div class="why-box"><strong>Why this matters:</strong> Every system above ~10K RPS has async components. Event-driven architecture decouples services, enables temporal decoupling, and is the backbone of every real-time feature at scale. Kafka alone appears in the architecture of Uber, LinkedIn, Airbnb, and Netflix.</div>
+    <div class="week-grid">
+      <div class="block">
+        <div class="block-label">Core Concepts</div>
+        <div class="block-content">At-least-once vs at-most-once vs exactly-once delivery · Consumer groups & partition design · Dead letter queues · Backpressure · Outbox pattern (transactional messaging) · Saga pattern for distributed transactions · CQRS (Command Query Responsibility Segregation) · Event sourcing · Change Data Capture (CDC)</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Queue vs Streaming Trade-offs</div>
+        <div class="block-content"><strong>Queues (SQS, RabbitMQ):</strong> task distribution, job queues, best for point-to-point · <strong>Streams (Kafka, Kinesis, Redpanda):</strong> event replay, fan-out, audit logs, time-travel queries · <strong>Pub/Sub (Redis Pub/Sub, GCP Pub/Sub):</strong> ephemeral fan-out, real-time notifications · Choosing by retention, ordering, replay, throughput needs</div>
+      </div>
+      <div class="block full">
+        <div class="block-label">Technologies</div>
+        <div class="pills">
+          <span class="pill purple">Apache Kafka</span>
+          <span class="pill amber">Redpanda (Kafka-compatible)</span>
+          <span class="pill teal">AWS SQS + SNS</span>
+          <span class="pill blue">Debezium (CDC)</span>
+          <span class="pill coral">RabbitMQ</span>
+          <span class="pill gray">NATS / NATS JetStream</span>
+        </div>
+      </div>
+    </div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Exercises</div>
+    <div class="exercise"><div class="exercise-title">Design an order processing pipeline</div>Model an e-commerce order flow: payment → inventory → fulfillment → notification. Use the Saga pattern with choreography (event-driven) vs orchestration (central orchestrator). Compare failure modes.</div>
+    <div class="exercise"><div class="exercise-title">Outbox pattern implementation sketch</div>Explain how you'd guarantee exactly-once processing of payment events using the transactional outbox pattern. Draw the DB schema, polling worker, and Kafka producer flow.</div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Resources</div>
+    <div class="resource"><span class="res-icon">📖</span><div class="res-content"><div class="res-title">DDIA — Chapter 11: Stream Processing</div><div class="res-meta">Book · Kleppmann · The canonical chapter on event streaming concepts</div></div></div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">Confluent's Kafka documentation & patterns</div><div class="res-meta">docs.confluent.io · Consumer group rebalancing, partition strategy, retention</div></div></div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">microservices.io — Saga pattern + Outbox pattern</div><div class="res-meta">microservices.io/patterns · Chris Richardson's pattern catalog</div></div></div>
+  </div>
+</div>
+
+<!-- WEEK 6 -->
+<div class="week-card">
+  <div class="week-header" onclick="toggleWeek(this)">
+    <div class="week-badge">Week 06</div>
+    <div class="week-accent c6"></div>
+    <div class="week-title">Reliability Engineering: Fault Tolerance, Resilience & Observability</div>
+    <div class="chevron">▼</div>
+  </div>
+  <div class="week-body">
+    <div class="why-box"><strong>Why this matters:</strong> A system that doesn't fail gracefully isn't production-ready. Observability is now a first-class design concern — you can't fix what you can't see. This week directly maps to how senior engineers think about production systems.</div>
+    <div class="week-grid">
+      <div class="block">
+        <div class="block-label">Fault Tolerance Patterns</div>
+        <div class="block-content">Circuit breaker (Closed/Open/Half-Open) · Bulkhead isolation · Timeout strategy · Retry with jitter · Fallback responses · Graceful degradation · Health check patterns (liveness vs readiness probes) · Blue-green & canary deployments · Feature flags · Dark launches</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Observability: The Three Pillars</div>
+        <div class="block-content"><strong>Metrics:</strong> RED (Rate, Error, Duration), USE (Utilization, Saturation, Errors) · <strong>Logs:</strong> structured logging, log aggregation, correlation IDs · <strong>Traces:</strong> distributed tracing, sampling strategies, span context propagation · <strong>Events:</strong> alerting, anomaly detection · OpenTelemetry as the unifying standard in 2026</div>
+      </div>
+      <div class="block full">
+        <div class="block-label">Technologies</div>
+        <div class="pills">
+          <span class="pill purple">OpenTelemetry</span>
+          <span class="pill teal">Grafana + Prometheus</span>
+          <span class="pill amber">Jaeger / Tempo (tracing)</span>
+          <span class="pill blue">Datadog / Honeycomb</span>
+          <span class="pill coral">PagerDuty alerting</span>
+          <span class="pill gray">Resilience4j / Polly</span>
+        </div>
+      </div>
+    </div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Exercises</div>
+    <div class="exercise"><div class="exercise-title">Failure mode analysis</div>Take your Week 5 order pipeline. For each service, list the top 3 failure modes. Design the circuit breaker thresholds, fallback responses, and alerting rules. What's the minimum graceful degraded state?</div>
+    <div class="exercise"><div class="exercise-title">Observability instrumentation plan</div>For a new microservice, define: which metrics to expose (with RED framework), log fields (structured, with correlation ID), and which spans to trace. Write the OpenTelemetry SDK setup in pseudocode.</div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Resources</div>
+    <div class="resource"><span class="res-icon">📖</span><div class="res-content"><div class="res-title">Google SRE Book — Chapters on Monitoring & Alerting (free)</div><div class="res-meta">sre.google/sre-book · How Google operationalizes reliability</div></div></div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">Honeycomb.io Blog — Observability vs Monitoring</div><div class="res-meta">honeycomb.io/blog · Charity Majors on what real observability looks like</div></div></div>
+  </div>
+</div>
+
+<div class="sdivider"></div>
+
+<!-- PHASE 3 -->
+<div class="phase-header">
+  <div class="phase-num">3</div>
+  <div class="phase-meta">
+    <div class="phase-label">Weeks 7–9 · Advanced Architecture</div>
+    <div class="phase-title">Microservices, Real-Time, Search & Modern Data Pipelines</div>
+    <div class="phase-subtitle">The patterns that define production systems at top-tier tech companies today.</div>
+  </div>
+</div>
+
+<!-- WEEK 7 -->
+<div class="week-card">
+  <div class="week-header" onclick="toggleWeek(this)">
+    <div class="week-badge">Week 07</div>
+    <div class="week-accent c7"></div>
+    <div class="week-title">Microservices & Cloud-Native Architecture</div>
+    <div class="chevron">▼</div>
+  </div>
+  <div class="week-body">
+    <div class="why-box"><strong>Why this matters:</strong> Microservices are the dominant architectural style in 2026 — but also the most commonly botched. Understanding service boundaries (Domain-Driven Design), deployment patterns, and operational complexity is what separates architects from implementers.</div>
+    <div class="week-grid">
+      <div class="block">
+        <div class="block-label">Service Design Principles</div>
+        <div class="block-content">Domain-Driven Design (Bounded Contexts, Aggregates) · Conway's Law in practice · Service granularity trade-offs · Anti-corruption layer · Strangler Fig migration pattern · Sidecar / Ambassador / Adapter patterns · API composition vs database joins · Data ownership across services · The two-pizza team rule</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Cloud-Native Operations</div>
+        <div class="block-content">Container orchestration (Kubernetes) · Helm chart patterns · GitOps with ArgoCD / Flux · Rolling updates, blue-green, canary via Kubernetes · Pod disruption budgets · Horizontal Pod Autoscaler (custom metrics) · Serverless (Lambda, Cloud Run) · Multi-tenancy patterns · Cost optimization at scale</div>
+      </div>
+      <div class="block full">
+        <div class="block-label">Technologies</div>
+        <div class="pills">
+          <span class="pill purple">Kubernetes + Helm</span>
+          <span class="pill teal">ArgoCD / Flux (GitOps)</span>
+          <span class="pill blue">AWS Lambda / Cloud Run</span>
+          <span class="pill amber">Dapr (Distributed App Runtime)</span>
+          <span class="pill coral">Temporal (workflow orchestration)</span>
+          <span class="pill gray">KEDA (event-driven autoscaling)</span>
+        </div>
+      </div>
+    </div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Exercises</div>
+    <div class="exercise"><div class="exercise-title">Service boundary exercise</div>Take a monolithic e-commerce app. Apply DDD to identify bounded contexts. Draw the service map, define ownership of each entity (Product, Order, Customer, Inventory), and identify where you need eventual consistency vs strong consistency.</div>
+    <div class="exercise"><div class="exercise-title">Monolith-to-microservices plan</div>Using the Strangler Fig pattern, define a phased migration plan. Which service do you extract first? How do you run both systems in parallel? How do you handle shared database access during migration?</div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Resources</div>
+    <div class="resource"><span class="res-icon">📖</span><div class="res-content"><div class="res-title">Building Microservices — Sam Newman (2nd ed.)</div><div class="res-meta">Book · The definitive guide to microservice design trade-offs</div></div></div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">Temporal.io Documentation — Durable Execution Workflows</div><div class="res-meta">docs.temporal.io · How Uber/Stripe orchestrate complex distributed workflows</div></div></div>
+  </div>
+</div>
+
+<!-- WEEK 8 -->
+<div class="week-card">
+  <div class="week-header" onclick="toggleWeek(this)">
+    <div class="week-badge">Week 08</div>
+    <div class="week-accent c8"></div>
+    <div class="week-title">Real-Time Systems: WebSockets, SSE & Live Data Architectures</div>
+    <div class="chevron">▼</div>
+  </div>
+  <div class="week-body">
+    <div class="why-box"><strong>Why this matters:</strong> Real-time features (live feeds, collaborative editing, presence, notifications, dashboards) are now table stakes in consumer and enterprise products. This is a technically underrated area where most engineers are weak — it's a high-leverage skill to develop.</div>
+    <div class="week-grid">
+      <div class="block">
+        <div class="block-label">Transport Protocols</div>
+        <div class="block-content">WebSocket connection lifecycle · Server-Sent Events (SSE) vs WebSocket · Long polling (legacy but still in use) · HTTP/2 multiplexing · HTTP/3 + QUIC for mobile real-time · WebRTC for P2P media · Protocol selection by use case · Connection management at scale (sticky sessions vs stateless via pub/sub)</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Scaling Real-Time</div>
+        <div class="block-content">Fan-out problem (1 event → millions of clients) · Presence systems (who's online) · Collaborative CRDT-based editing (Yjs, Automerge) · Live cursors and conflict-free replicated data types · Connection multiplexing · WebSocket server clustering with Redis Pub/Sub · Fan-out-on-read vs fan-out-on-write trade-off · Backpressure handling</div>
+      </div>
+      <div class="block full">
+        <div class="block-label">Technologies</div>
+        <div class="pills">
+          <span class="pill purple">Socket.io / native WebSocket</span>
+          <span class="pill teal">Ably / Pusher (managed)</span>
+          <span class="pill amber">Redis Pub/Sub + Streams</span>
+          <span class="pill blue">Kafka for fan-out pipelines</span>
+          <span class="pill coral">Yjs / Automerge (CRDT)</span>
+          <span class="pill gray">Cloudflare Durable Objects</span>
+        </div>
+      </div>
+    </div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Exercises</div>
+    <div class="exercise"><div class="exercise-title">Design a real-time notification system</div>Design notifications for a social platform: 10M users, average fan-out of 300 followers per post. Compare fan-out-on-write (precompute) vs fan-out-on-read (pull). Where does each break down?</div>
+    <div class="exercise"><div class="exercise-title">Live collaboration session design</div>Design the backend for a Google Docs-like collaborative editor for 50 concurrent users per document. Choose between operational transforms and CRDTs. Explain your persistence strategy (how do you save without blocking collaboration?).</div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Resources</div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">Discord Engineering Blog — How Discord scaled to millions of WebSocket connections</div><div class="res-meta">discord.com/blog · Real production engineering behind a real-time platform</div></div></div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">Figma's CRDTs Post — How Figma's multiplayer works</div><div class="res-meta">figma.com/blog · Deep dive into real-time collaboration architecture</div></div></div>
+  </div>
+</div>
+
+<!-- WEEK 9 -->
+<div class="week-card">
+  <div class="week-header" onclick="toggleWeek(this)">
+    <div class="week-badge">Week 09</div>
+    <div class="week-accent c9"></div>
+    <div class="week-title">Search, Feeds & Data Pipeline Architecture</div>
+    <div class="chevron">▼</div>
+  </div>
+  <div class="week-body">
+    <div class="why-box"><strong>Why this matters:</strong> Search and feed systems are among the most frequently asked system design interview topics — and among the most complex to build. They combine indexing, ranking, caching, personalization, and real-time updates into one cohesive problem space.</div>
+    <div class="week-grid">
+      <div class="block">
+        <div class="block-label">Search Architecture</div>
+        <div class="block-content">Inverted index fundamentals · TF-IDF and BM25 scoring · Typeahead / autocomplete design · Spell correction (Levenshtein, n-gram models) · Faceted search · Geo-search (geohash, R-tree) · Search-as-you-type latency requirements · Index sharding in Elasticsearch · Reindex without downtime · Semantic search with vector embeddings + ANN (HNSW, IVF)</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Feed & Ranking Systems</div>
+        <div class="block-content">Timeline generation strategies · Interest graph vs social graph · Pre-computed vs real-time feed generation · Feature store design for ranking models · Lambda architecture (batch + stream) · Kappa architecture (stream-only) · Flink/Spark for stream processing · Feature freshness trade-offs · A/B test infrastructure for ranking</div>
+      </div>
+      <div class="block full">
+        <div class="block-label">Technologies</div>
+        <div class="pills">
+          <span class="pill purple">Elasticsearch / OpenSearch</span>
+          <span class="pill teal">Apache Flink / Spark</span>
+          <span class="pill amber">Pinecone / Weaviate (vector search)</span>
+          <span class="pill blue">Feast / Tecton (feature store)</span>
+          <span class="pill coral">dbt (data transformation)</span>
+          <span class="pill gray">Apache Iceberg (data lakehouse)</span>
+        </div>
+      </div>
+    </div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Exercises</div>
+    <div class="exercise"><div class="exercise-title">Design a full-text search system</div>Design the search backend for an e-commerce site: product catalog of 50M items, typo tolerance, faceted filtering (brand, price, rating), and geo-ranked results. Define indexing pipeline, query pipeline, and relevance tuning mechanism.</div>
+    <div class="exercise"><div class="exercise-title">News feed system design</div>Design Twitter's "For You" feed at 300M DAU. How do you blend following-graph content with algorithmic recommendations? Define the fanout strategy, ranking pipeline stages, and how you'd handle celebrity accounts (high fan-out problem).</div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Resources</div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">Elasticsearch: The Definitive Guide (free online)</div><div class="res-meta">elastic.co/guide · Index design, query DSL, cluster topology</div></div></div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">Martin Kleppmann's "Designing Data-Intensive Applications" — Ch 10–11</div><div class="res-meta">Book · Batch/stream processing patterns used by modern data pipelines</div></div></div>
+  </div>
+</div>
+
+<div class="sdivider"></div>
+
+<!-- PHASE 4 -->
+<div class="phase-header">
+  <div class="phase-num">4</div>
+  <div class="phase-meta">
+    <div class="phase-label">Weeks 10–12 · Modern Frontiers</div>
+    <div class="phase-title">Security, AI Infrastructure & Design Interview Mastery</div>
+    <div class="phase-subtitle">The topics that define senior-level thinking and separate 2026 engineers from the pack.</div>
+  </div>
+</div>
+
+<!-- WEEK 10 -->
+<div class="week-card">
+  <div class="week-header" onclick="toggleWeek(this)">
+    <div class="week-badge">Week 10</div>
+    <div class="week-accent c10"></div>
+    <div class="week-title">Security Architecture & Multi-Tenancy at Scale</div>
+    <div class="chevron">▼</div>
+  </div>
+  <div class="week-body">
+    <div class="why-box"><strong>Why this matters:</strong> Security has moved from "something DevSecOps handles" to a first-class architecture concern. In 2026, system designers are expected to reason about auth, data isolation, and threat models as part of the design — not as an afterthought.</div>
+    <div class="week-grid">
+      <div class="block">
+        <div class="block-label">Auth & Identity</div>
+        <div class="block-content">OAuth 2.0 + PKCE flows · JWT design (short-lived + refresh tokens) · Session vs token trade-offs · OIDC and SSO patterns · API key management and rotation · mTLS for service-to-service auth · Zero Trust architecture · Fine-grained authorization (RBAC, ABAC, ReBAC) · Rate limiting as a security control</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Data Security & Multi-Tenancy</div>
+        <div class="block-content">Encryption at rest vs in transit · Row-level security (PostgreSQL RLS) · Tenant isolation models (silo vs pool vs bridge) · Secret management (Vault, AWS Secrets Manager) · Audit logging design · PII data handling & tokenization · GDPR-compliant data deletion · Vulnerability in shared infrastructure (noisy neighbor)</div>
+      </div>
+      <div class="block full">
+        <div class="block-label">Technologies</div>
+        <div class="pills">
+          <span class="pill purple">Auth0 / Okta / Keycloak</span>
+          <span class="pill teal">HashiCorp Vault</span>
+          <span class="pill amber">AWS IAM + Secrets Manager</span>
+          <span class="pill blue">Open Policy Agent (OPA)</span>
+          <span class="pill coral">Clerk / WorkOS (modern auth)</span>
+          <span class="pill gray">Permit.io (ReBAC)</span>
+        </div>
+      </div>
+    </div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Exercises</div>
+    <div class="exercise"><div class="exercise-title">Design an auth system for a multi-tenant SaaS</div>Define the tenant isolation model, session management strategy (JWT vs server-side sessions), token refresh mechanism, and how you'd handle a token revocation emergency at 10M active sessions.</div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Resources</div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">OAuth 2.0 Security Best Current Practice (IETF RFC)</div><div class="res-meta">oauth.net/2/ · The canonical spec for modern auth implementations</div></div></div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">Auth0 Architecture Scenarios — SaaS multi-tenancy patterns</div><div class="res-meta">auth0.com/docs · Real-world identity architecture case studies</div></div></div>
+  </div>
+</div>
+
+<!-- WEEK 11 -->
+<div class="week-card">
+  <div class="week-header" onclick="toggleWeek(this)">
+    <div class="week-badge">Week 11</div>
+    <div class="week-accent c11"></div>
+    <div class="week-title">AI-Native Infrastructure: LLM Systems, RAG & ML Platform Design</div>
+    <div class="chevron">▼</div>
+  </div>
+  <div class="week-body">
+    <div class="why-box"><strong>Why this matters:</strong> In 2026, virtually every backend engineer is expected to understand how to integrate AI components into production systems. LLM serving, RAG pipelines, vector databases, and inference infrastructure are now mainstream system design topics — not just ML engineer concerns.</div>
+    <div class="week-grid">
+      <div class="block">
+        <div class="block-label">LLM Serving Architecture</div>
+        <div class="block-content">LLM inference serving (vLLM, TGI) · KV cache and memory management for inference · Batching strategies (dynamic batching, continuous batching) · Token streaming via SSE · Model quantization (INT8, INT4) and its throughput trade-offs · Multi-modal model serving · LLM gateway pattern (routing, rate limiting, cost tracking) · Model versioning and A/B testing</div>
+      </div>
+      <div class="block">
+        <div class="block-label">RAG & AI Pipeline Design</div>
+        <div class="block-content">RAG (Retrieval-Augmented Generation) pipeline stages · Chunking strategies for documents · Embedding models and update pipelines · ANN index types (HNSW, IVF-PQ) · Hybrid search (BM25 + vector) · Re-ranking models · Context window management · Prompt caching (Anthropic prefix caching) · Agent tool-call orchestration · Guardrails and output validation</div>
+      </div>
+      <div class="block full">
+        <div class="block-label">Technologies</div>
+        <div class="pills">
+          <span class="pill purple">vLLM / TGI (inference servers)</span>
+          <span class="pill teal">LangChain / LlamaIndex (orchestration)</span>
+          <span class="pill amber">Pinecone / pgvector / Weaviate</span>
+          <span class="pill blue">Anthropic / OpenAI APIs</span>
+          <span class="pill coral">Ray Serve (ML serving)</span>
+          <span class="pill gray">Qdrant / Milvus (vector DBs)</span>
+        </div>
+      </div>
+    </div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Exercises</div>
+    <div class="exercise"><div class="exercise-title">Design a production RAG system</div>Design a RAG pipeline for a customer support chatbot with 10M support documents. Define: document ingestion pipeline, chunking strategy, embedding model update cadence, vector index type, hybrid retrieval, re-ranking, LLM call, and response streaming to the client.</div>
+    <div class="exercise"><div class="exercise-title">LLM gateway design</div>Design a multi-provider LLM gateway that handles rate limiting per customer, fallback between Anthropic / OpenAI / local models, cost tracking by request, and semantic caching (returning cached answers for similar prompts). Define the cache key strategy.</div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Resources</div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">vLLM Documentation — PagedAttention and continuous batching</div><div class="res-meta">docs.vllm.ai · How modern LLM serving works under the hood</div></div></div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">Anthropic Prompt Engineering & API Docs</div><div class="res-meta">docs.anthropic.com · Caching, streaming, tool use, context management</div></div></div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">The RAG Survey — arxiv.org/abs/2312.10997</div><div class="res-meta">Paper · Comprehensive taxonomy of RAG architectures and trade-offs</div></div></div>
+  </div>
+</div>
+
+<!-- WEEK 12 -->
+<div class="week-card">
+  <div class="week-header" onclick="toggleWeek(this)">
+    <div class="week-badge">Week 12</div>
+    <div class="week-accent c12"></div>
+    <div class="week-title">Design Interview Mastery & Synthesis</div>
+    <div class="chevron">▼</div>
+  </div>
+  <div class="week-body">
+    <div class="why-box"><strong>Why this matters:</strong> Knowing the patterns isn't enough — system design interviews and real design reviews reward structured thinking, explicit trade-off articulation, and the ability to lead a conversation. This week is about building that meta-skill.</div>
+    <div class="week-grid">
+      <div class="block">
+        <div class="block-label">The Design Framework</div>
+        <div class="block-content"><strong>1. Clarify requirements</strong> (functional, non-functional, constraints, scale) · <strong>2. Capacity estimation</strong> (QPS, storage, bandwidth) · <strong>3. High-level design</strong> (diagram with major components) · <strong>4. Deep dive</strong> (pick 2–3 critical components) · <strong>5. Trade-offs & bottlenecks</strong> · <strong>6. Failure modes & monitoring</strong> · Time-boxing each phase</div>
+      </div>
+      <div class="block">
+        <div class="block-label">Common Failure Modes in Design Discussions</div>
+        <div class="block-content">Over-engineering immediately · Skipping clarifying questions · Not quantifying scale · Designing without considering failure · Ignoring operational concerns (observability, deployment) · Not explaining why you made a choice · Anchoring on one solution too early · Missing the simple solution that actually scales</div>
+      </div>
+    </div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Week 12 Activities</div>
+    <div class="exercise"><div class="exercise-title">Mock design sessions × 3</div>Do 3 full 45-minute mock interviews (with a peer, on Pramp, or with an AI). Use the framework above. Record yourself. Review where you spent time and where you got stuck.</div>
+    <div class="exercise"><div class="exercise-title">Write-up challenge</div>Pick any system you've designed during this program. Write a 500-word design doc: problem statement, constraints, chosen approach, alternatives considered, and open questions. This builds the exact skill used in real engineering orgs.</div>
+    <div class="exercise"><div class="exercise-title">Component deep-dive library</div>For each major component (Load Balancer, Message Queue, Cache, DB, Search Index), write a 1-page "cheat sheet" from memory. These become your mental scaffolding in interviews.</div>
+    <div class="block-label" style="margin:.75rem 0 .5rem">Resources</div>
+    <div class="resource"><span class="res-icon">📖</span><div class="res-content"><div class="res-title">System Design Interview Vol. 1 & 2 — Alex Xu</div><div class="res-meta">Book · The most widely-used interview prep resource</div></div></div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">Pramp.com — Free peer mock interviews</div><div class="res-meta">pramp.com · Practice live with real engineers</div></div></div>
+    <div class="resource"><span class="res-icon">🌐</span><div class="res-content"><div class="res-title">ByteByteGo — System design newsletter & videos</div><div class="res-meta">bytebytego.com · Alex Xu's visual system design explanations</div></div></div>
+  </div>
+</div>
+
+</div><!-- end roadmap tab -->
+
+
+<!-- ══════════════════════════════════════════════ PROBLEMS ══ -->
+<div class="section" id="tab-problems">
+<div class="section-title">40 System Design Problems to Practice</div>
+<p style="font-size:13px;color:var(--txt2);margin-bottom:1.25rem;line-height:1.7">Ordered by theme. For each problem, spend 45 minutes designing solo, then compare with reference architectures. Focus on articulating trade-offs, not just producing a diagram. Click any problem to discuss it.</p>
+
+<div class="block-label" style="margin-bottom:.6rem">Core Infrastructure</div>
+<div class="prob-grid" style="margin-bottom:1.25rem">
+  <div class="prob-card" onclick="sendPrompt('Walk me through how to design a URL shortener like bit.ly at scale')"><div class="prob-title">URL Shortener (bit.ly)</div><div class="prob-tags"><span class="pill teal">Hashing</span><span class="pill gray">Redirect</span><span class="prob-diff diff-med">Medium</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('How would you design a rate limiter that works across distributed API servers?')"><div class="prob-title">Distributed Rate Limiter</div><div class="prob-tags"><span class="pill purple">Redis</span><span class="pill gray">Sliding window</span><span class="prob-diff diff-med">Medium</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a distributed cache like Memcached or Redis cluster')"><div class="prob-title">Distributed Cache</div><div class="prob-tags"><span class="pill amber">Consistent hashing</span><span class="pill gray">Eviction</span><span class="prob-diff diff-hard">Hard</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a web crawler that can crawl 1 billion URLs')"><div class="prob-title">Web Crawler (1B URLs)</div><div class="prob-tags"><span class="pill blue">Politeness</span><span class="pill gray">Dedup</span><span class="prob-diff diff-hard">Hard</span></div></div>
+</div>
+
+<div class="block-label" style="margin-bottom:.6rem">Storage & Data Systems</div>
+<div class="prob-grid" style="margin-bottom:1.25rem">
+  <div class="prob-card" onclick="sendPrompt('Design a distributed object storage system like Amazon S3')"><div class="prob-title">Object Storage (S3)</div><div class="prob-tags"><span class="pill teal">Sharding</span><span class="pill gray">Replication</span><span class="prob-diff diff-ext">Expert</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('How would you design Google Drive / Dropbox file sync at scale?')"><div class="prob-title">File Sync (Dropbox)</div><div class="prob-tags"><span class="pill purple">Delta sync</span><span class="pill gray">Chunking</span><span class="prob-diff diff-hard">Hard</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a distributed key-value store like DynamoDB or Cassandra')"><div class="prob-title">Distributed KV Store</div><div class="prob-tags"><span class="pill amber">Quorum</span><span class="pill gray">LSM-tree</span><span class="prob-diff diff-ext">Expert</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a time-series database for IoT sensor data at 1M writes/sec')"><div class="prob-title">Time-Series Database</div><div class="prob-tags"><span class="pill coral">IoT</span><span class="pill gray">Compression</span><span class="prob-diff diff-hard">Hard</span></div></div>
+</div>
+
+<div class="block-label" style="margin-bottom:.6rem">Social & Content Platforms</div>
+<div class="prob-grid" style="margin-bottom:1.25rem">
+  <div class="prob-card" onclick="sendPrompt('Design Instagram or Twitter at 500M DAU')"><div class="prob-title">Social Media Platform</div><div class="prob-tags"><span class="pill purple">Feed fanout</span><span class="pill gray">Media CDN</span><span class="prob-diff diff-hard">Hard</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a YouTube-like video streaming platform')"><div class="prob-title">Video Streaming (YouTube)</div><div class="prob-tags"><span class="pill teal">Transcoding</span><span class="pill gray">CDN</span><span class="prob-diff diff-hard">Hard</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a TikTok-style short video recommendation feed')"><div class="prob-title">Short Video Feed (TikTok)</div><div class="prob-tags"><span class="pill amber">Ranking ML</span><span class="pill gray">Real-time</span><span class="prob-diff diff-ext">Expert</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a collaborative document editor like Google Docs')"><div class="prob-title">Collaborative Editor</div><div class="prob-tags"><span class="pill blue">CRDT / OT</span><span class="pill gray">WebSocket</span><span class="prob-diff diff-ext">Expert</span></div></div>
+</div>
+
+<div class="block-label" style="margin-bottom:.6rem">Communication & Messaging</div>
+<div class="prob-grid" style="margin-bottom:1.25rem">
+  <div class="prob-card" onclick="sendPrompt('Design a WhatsApp-like messaging system at 2B users')"><div class="prob-title">Messaging System (WhatsApp)</div><div class="prob-tags"><span class="pill purple">WebSocket</span><span class="pill gray">Delivery guarantees</span><span class="prob-diff diff-hard">Hard</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a notification service that handles push, email, and SMS at 100M users')"><div class="prob-title">Notification Service</div><div class="prob-tags"><span class="pill teal">Fan-out</span><span class="pill gray">Priority queues</span><span class="prob-diff diff-med">Medium</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a Slack-like team messaging platform with channels and threads')"><div class="prob-title">Team Chat (Slack)</div><div class="prob-tags"><span class="pill amber">Presence</span><span class="pill gray">Search</span><span class="prob-diff diff-hard">Hard</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a live streaming platform like Twitch')"><div class="prob-title">Live Streaming (Twitch)</div><div class="prob-tags"><span class="pill coral">RTMP</span><span class="pill gray">HLS/DASH</span><span class="prob-diff diff-ext">Expert</span></div></div>
+</div>
+
+<div class="block-label" style="margin-bottom:.6rem">Commerce & Transactions</div>
+<div class="prob-grid" style="margin-bottom:1.25rem">
+  <div class="prob-card" onclick="sendPrompt('Design a payment processing system like Stripe')"><div class="prob-title">Payment System (Stripe)</div><div class="prob-tags"><span class="pill purple">Idempotency</span><span class="pill gray">Saga pattern</span><span class="prob-diff diff-ext">Expert</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design an e-commerce flash sale system that handles 100K concurrent purchases')"><div class="prob-title">Flash Sale System</div><div class="prob-tags"><span class="pill teal">Inventory lock</span><span class="pill gray">Queue</span><span class="prob-diff diff-hard">Hard</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a ride-sharing platform like Uber — focus on matching and geo')"><div class="prob-title">Ride-Sharing (Uber)</div><div class="prob-tags"><span class="pill amber">Geo-index</span><span class="pill gray">Matching</span><span class="prob-diff diff-ext">Expert</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a hotel booking system like Booking.com with inventory management')"><div class="prob-title">Hotel Booking System</div><div class="prob-tags"><span class="pill blue">Concurrency</span><span class="pill gray">Double-booking</span><span class="prob-diff diff-hard">Hard</span></div></div>
+</div>
+
+<div class="block-label" style="margin-bottom:.6rem">Modern AI-Native Systems</div>
+<div class="prob-grid" style="margin-bottom:1.25rem">
+  <div class="prob-card" onclick="sendPrompt('Design a RAG-based customer support chatbot that handles 10K concurrent users')"><div class="prob-title">RAG Support Chatbot</div><div class="prob-tags"><span class="pill purple">Vector DB</span><span class="pill gray">LLM gateway</span><span class="prob-diff diff-hard">Hard</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design an LLM inference serving infrastructure that can handle 10K tokens/sec')"><div class="prob-title">LLM Serving Infrastructure</div><div class="prob-tags"><span class="pill teal">vLLM</span><span class="pill gray">GPU batching</span><span class="prob-diff diff-ext">Expert</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a semantic search engine using vector embeddings at billion-scale')"><div class="prob-title">Semantic Search Engine</div><div class="prob-tags"><span class="pill amber">ANN index</span><span class="pill gray">Hybrid retrieval</span><span class="prob-diff diff-hard">Hard</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a real-time ML feature store like Feast used for fraud detection')"><div class="prob-title">Real-Time Feature Store</div><div class="prob-tags"><span class="pill coral">Online/offline</span><span class="pill gray">Feature freshness</span><span class="prob-diff diff-ext">Expert</span></div></div>
+</div>
+
+<div class="block-label" style="margin-bottom:.6rem">Infrastructure & DevOps</div>
+<div class="prob-grid">
+  <div class="prob-card" onclick="sendPrompt('Design a CI/CD pipeline that can deploy 1000 services at a large tech company')"><div class="prob-title">CI/CD at Scale</div><div class="prob-tags"><span class="pill blue">GitOps</span><span class="pill gray">Canary</span><span class="prob-diff diff-hard">Hard</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a distributed logging and search system like Elasticsearch at petabyte scale')"><div class="prob-title">Distributed Logging (ELK)</div><div class="prob-tags"><span class="pill purple">Index rotation</span><span class="pill gray">Retention</span><span class="prob-diff diff-hard">Hard</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a metrics and alerting system like Prometheus + Grafana at large scale')"><div class="prob-title">Metrics & Alerting System</div><div class="prob-tags"><span class="pill teal">TSDB</span><span class="pill gray">Cardinality</span><span class="prob-diff diff-hard">Hard</span></div></div>
+  <div class="prob-card" onclick="sendPrompt('Design a distributed job scheduler like Airflow or Temporal at scale')"><div class="prob-title">Distributed Job Scheduler</div><div class="prob-tags"><span class="pill amber">DAG execution</span><span class="pill gray">Exactly-once</span><span class="prob-diff diff-hard">Hard</span></div></div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ PROJECTS ══ -->
+<div class="section" id="tab-projects">
+<div class="section-title">Hands-On Mini Projects</div>
+<p style="font-size:13px;color:var(--txt2);margin-bottom:1.25rem;line-height:1.7">Build these in the cloud (AWS Free Tier / GCP / Fly.io) to simulate real production constraints. The goal is not perfect code — it's experiencing the operational and architectural challenges firsthand.</p>
+
+<div class="project-card">
+  <div class="project-title"><span>1.</span> Distributed URL Shortener <span class="project-badge">Week 1–2</span></div>
+  <div class="project-desc">Build a URL shortener with: custom short codes (base62 encoding), Redis caching layer, read replicas for analytics, and a basic rate limiter. Deploy on two regions. Measure and compare latency with and without cache.</div>
+  <div class="pills"><span class="pill teal">Redis</span><span class="pill blue">PostgreSQL</span><span class="pill gray">Nginx</span><span class="pill purple">Fly.io multi-region</span></div>
+</div>
+
+<div class="project-card">
+  <div class="project-title"><span>2.</span> Event-Driven Order Pipeline <span class="project-badge">Week 4–5</span></div>
+  <div class="project-desc">Implement a simplified e-commerce order flow using the Saga pattern: Order Service → Payment Service → Inventory Service → Notification Service, connected via Kafka. Implement the transactional outbox pattern to guarantee delivery. Intentionally kill one service and observe how the system recovers.</div>
+  <div class="pills"><span class="pill purple">Kafka / Redpanda</span><span class="pill amber">PostgreSQL outbox</span><span class="pill teal">Debezium CDC</span><span class="pill gray">Docker Compose</span></div>
+</div>
+
+<div class="project-card">
+  <div class="project-title"><span>3.</span> Real-Time Presence & Notification System <span class="project-badge">Week 6–8</span></div>
+  <div class="project-desc">Build a "who's online" presence system for a mock chat app. Use WebSockets for client connections, Redis Pub/Sub to broadcast presence across multiple server instances, and a heartbeat mechanism for connection health. Handle reconnection and "ghost" users gracefully. Load test with 1000 simulated concurrent connections.</div>
+  <div class="pills"><span class="pill teal">WebSocket (ws library)</span><span class="pill amber">Redis Pub/Sub</span><span class="pill blue">k6 load testing</span><span class="pill gray">Node.js cluster</span></div>
+</div>
+
+<div class="project-card">
+  <div class="project-title"><span>4.</span> Search Engine with Hybrid Retrieval <span class="project-badge">Week 9</span></div>
+  <div class="project-desc">Build a hybrid search system over a document corpus (e.g., Wikipedia articles): keyword search via Elasticsearch (BM25), semantic search via embeddings stored in pgvector, and a simple re-ranker that blends both scores (RRF). Expose it as an API. Measure recall at k=5 and k=10 for both approaches.</div>
+  <div class="pills"><span class="pill purple">Elasticsearch</span><span class="pill teal">pgvector</span><span class="pill amber">Sentence transformers</span><span class="pill coral">FastAPI</span></div>
+</div>
+
+<div class="project-card">
+  <div class="project-title"><span>5.</span> Production-Grade RAG Pipeline <span class="project-badge">Week 11</span></div>
+  <div class="project-desc">Build a document Q&A system: ingest PDFs (chunking, embedding, indexing into a vector store), retrieve with hybrid search, call an LLM API for generation, stream the response to the client. Add: prompt caching, rate limiting per user, a basic observability dashboard (query latency, cache hit rate, token cost). This is the mini project most relevant to 2026 job descriptions.</div>
+  <div class="pills"><span class="pill purple">Anthropic API</span><span class="pill teal">Qdrant</span><span class="pill amber">LlamaIndex</span><span class="pill blue">Redis (caching)</span><span class="pill coral">OpenTelemetry</span></div>
+</div>
+
+<div class="project-card">
+  <div class="project-title"><span>6.</span> Observability Stack for Your Projects <span class="project-badge">Week 6 + Ongoing</span></div>
+  <div class="project-desc">Instrument all your mini projects with the full observability stack. Define SLOs for each service (e.g., P99 latency < 200ms, error rate < 0.1%). Set up alerts that would wake you up if they breach. Review your dashboards weekly and find one performance insight from each. This is as close to production SRE experience as you can get without being on-call.</div>
+  <div class="pills"><span class="pill teal">Prometheus + Grafana</span><span class="pill amber">OpenTelemetry</span><span class="pill purple">Jaeger / Tempo</span><span class="pill gray">Loki (logs)</span></div>
+</div>
+</div>
+
+
+<!-- ══════════════════════════════════════════════ TOOLS ══ -->
+<div class="section" id="tab-tools">
+<div class="section-title">Accelerating Learning with AI & Open-Source Tools</div>
+<p style="font-size:13px;color:var(--txt2);margin-bottom:1.25rem;line-height:1.7">Use these tools to compress experimentation cycles, get instant feedback on designs, and explore systems at a depth that would otherwise take years of production experience.</p>
+
+<div class="block-label" style="margin-bottom:.6rem">AI Learning Accelerators</div>
+
+<div class="tool-card">
+  <div class="tool-icon">🤖</div>
+  <div><div class="tool-name">Claude / ChatGPT — Design Critique Partner</div><div class="tool-desc">After drafting a system design, paste it into Claude and ask: "What are the top 5 failure modes of this design?", "What would break first at 10× traffic?", or "Argue against this design choice." Use it as a relentless devil's advocate. Ask it to roleplay as a Staff Engineer reviewing your design doc.</div></div>
+</div>
+
+<div class="tool-card">
+  <div class="tool-icon">⚙️</div>
+  <div><div class="tool-name">Claude / Cursor — Rapid Prototyping</div><div class="tool-desc">Use AI coding assistants to build mini projects 3–5× faster. The goal is the architecture, not the boilerplate. Let AI write the plumbing (DB migrations, API scaffolding) so you can focus on the design decisions (sharding logic, cache invalidation, retry handling).</div></div>
+</div>
+
+<div class="tool-card">
+  <div class="tool-icon">📝</div>
+  <div><div class="tool-name">AI Mock Interviews</div><div class="tool-desc">Use Claude to run mock system design sessions. Prompt: "You are a Staff Engineer at Google. Interview me on designing a distributed rate limiter. Be rigorous. Ask follow-up questions. At the end, give me structured feedback on my requirements gathering, design choices, and communication." Do this 2–3 times per week in Weeks 10–12.</div></div>
+</div>
+
+<div class="sdivider"></div>
+<div class="block-label" style="margin-bottom:.6rem">Cloud Platforms for Experimentation</div>
+
+<div class="tool-card">
+  <div class="tool-icon">☁️</div>
+  <div><div class="tool-name">AWS Free Tier + LocalStack</div><div class="tool-desc">Use LocalStack to emulate S3, DynamoDB, SQS, Lambda, ElastiCache locally — zero cost, no provisioning delay. Graduate to real AWS when you need actual scale testing. Focus on: DynamoDB single-table design, SQS + Lambda event processing, ElastiCache (Redis), and API Gateway + Lambda patterns.</div></div>
+</div>
+
+<div class="tool-card">
+  <div class="tool-icon">🚀</div>
+  <div><div class="tool-name">Fly.io / Render — Multi-Region Deployment</div><div class="tool-desc">Deploy your mini projects on Fly.io to experience multi-region deployments with minimal ops overhead. Fly.io's Anycast routing and WireGuard networking let you genuinely test latency differences between regions — invaluable for understanding geo-distribution trade-offs.</div></div>
+</div>
+
+<div class="tool-card">
+  <div class="tool-icon">🔬</div>
+  <div><div class="tool-name">Grafana Cloud (Free Tier)</div><div class="tool-desc">Use Grafana Cloud's generous free tier to run a production-grade observability stack (Prometheus, Loki, Tempo, Grafana) without managing infrastructure. This is the fastest way to experience real observability tooling before you need to operate it yourself.</div></div>
+</div>
+
+<div class="sdivider"></div>
+<div class="block-label" style="margin-bottom:.6rem">Open-Source Tools to Run Locally</div>
+
+<div class="tool-card">
+  <div class="tool-icon">🧪</div>
+  <div><div class="tool-name">k6 — Load Testing</div><div class="tool-desc">k6 is the best tool for understanding how your systems behave under load. Write a 20-line JS script to simulate 1000 concurrent users hitting your service. Watch your P99 latency, error rate, and throughput change. This makes bottlenecks viscerally real. Run load tests against all your mini projects.</div></div>
+</div>
+
+<div class="tool-card">
+  <div class="tool-icon">🐳</div>
+  <div><div class="tool-name">Docker Compose — Local Distributed Systems</div><div class="tool-desc">Docker Compose lets you run Kafka, Zookeeper, PostgreSQL, Redis, Elasticsearch, and your own services locally in a realistic topology. This is the fastest way to experience distributed system failure modes: kill a container and see what happens downstream.</div></div>
+</div>
+
+<div class="tool-card">
+  <div class="tool-icon">🔀</div>
+  <div><div class="tool-name">Toxiproxy — Fault Injection</div><div class="tool-desc">Shopify's Toxiproxy lets you inject network faults (latency, bandwidth limits, connection drops) between your services. Use it to test your circuit breakers, retry logic, and timeout handling under realistic failure conditions. This is lightweight chaos engineering you can run on your laptop.</div></div>
+</div>
+
+<div class="tool-card">
+  <div class="tool-icon">📊</div>
+  <div><div class="tool-name">Excalidraw / Mermaid — Design Diagrams</div><div class="tool-desc">Use Excalidraw for freehand architectural diagrams (fast to sketch, collaborative) and Mermaid for code-as-diagram (sequence diagrams, ER diagrams, flowcharts). Practice drawing your system designs in under 5 minutes — speed matters in interviews and real design reviews.</div></div>
+</div>
+
+<div class="sdivider"></div>
+<div class="block-label" style="margin-bottom:.6rem">Community & Ongoing Learning</div>
+
+<div class="tool-card">
+  <div class="tool-icon">📰</div>
+  <div><div class="tool-name">Engineering Blogs to Follow Weekly</div><div class="tool-desc">Uber Engineering · Netflix TechBlog · Discord Engineering · Cloudflare Blog · Meta Engineering · Stripe Engineering · DoorDash Engineering. Spend 30 min/week reading one real case study. Ask yourself: what problem did they solve, what trade-offs did they make, and could you have designed this?</div></div>
+</div>
+
+<div class="tool-card">
+  <div class="tool-icon">🎓</div>
+  <div><div class="tool-name">ByteByteGo Newsletter + HighScalability.com</div><div class="tool-desc">ByteByteGo (bytebytego.com) publishes weekly visual system design breakdowns — subscribe and read every issue. HighScalability.com archives real architecture deep-dives from companies at scale. Both are excellent for building pattern recognition across diverse system types.</div></div>
+</div>
+</div>
+
+</div><!-- container -->
+
+<script>
+function toggleWeek(header){
+  const body=header.nextElementSibling;
+  header.classList.toggle('open');
+  body.classList.toggle('open');
+  updateProgress();
+}
+
+function updateProgress(){
+  const total=document.querySelectorAll('.week-header').length;
+  const open=document.querySelectorAll('.week-header.open').length;
+  const pct=Math.round(open/total*100);
+  document.getElementById('prog-fill').style.width=pct+'%';
+  document.getElementById('prog-pct').textContent=open+' / '+total+' weeks';
+}
+
+document.getElementById('mainnav').addEventListener('click',function(e){
+  const btn=e.target.closest('.nav-btn');
+  if(!btn)return;
+  document.querySelectorAll('.nav-btn').forEach(b=>b.classList.remove('active'));
+  btn.classList.add('active');
+  const tab=btn.dataset.tab;
+  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+});
+</script>
